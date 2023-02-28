@@ -2,23 +2,31 @@ import "./App.css";
 import { GiPerson, GiSupersonicBullet } from "react-icons/gi";
 import { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
+
 function App() {
+
+  //Adding references
   const viewportRef = useRef(null);
   const playerRef = useRef(null);
   const testRef = useRef(null);
 
+  //Adding states
   const [move, setMove] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
+  //Properly handling with event listeners
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
-
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
+  //Function that handle movement
   const handleKeyDown = (event) => {
+    setMove(true);
     const RTPosition = handlePosition();
     switch (event.key) {
       case "ArrowLeft":
@@ -38,6 +46,12 @@ function App() {
     }
   };
 
+  //Function that handle icon
+  const handleKeyUp = () => {
+    setMove(false);
+  }
+
+  //Tracking current position
   function handlePosition() {
     const viewport = viewportRef?.current.getBoundingClientRect();
     const player = playerRef?.current.getBoundingClientRect();
@@ -46,29 +60,34 @@ function App() {
       x: player.left - viewport.left,
       y: player.top - viewport.top,
     };
+
+    handleCollision(position);
+
     return position;
   }
-  function handleCollision() {
-    if (position) {
+
+  //Checking collision, getting back color
+  function handleCollision(pos) {
+    if (pos) {
       html2canvas(document.body).then((canvas) => {
         let ctx = canvas.getContext("2d");
-        let p = ctx.getImageData(position.x, position.y, 1, 1).data;
+        let p = ctx.getImageData(pos.x, pos.y, 1, 1).data;
 
         console.log(`rgba(${p[0]},${p[1]},${p[2]},${p[3]})`);
 
         testRef.current.style.backgroundColor = `rgba(${p[0]},${p[1]},${p[2]},${p[3]})`;
 
         if (p[2] <= p[0] || p[2] <= p[1]) {
-          console.log('Collision detected!')
+          console.log("Collision detected!");
           return true;
         }
       });
     }
   }
 
+  //Logging position
   useEffect(() => {
     console.log(position);
-    handleCollision();
   }, [position]);
 
   return (
