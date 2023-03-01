@@ -25,25 +25,33 @@ function App() {
 
   //Function that handle movement
   const handleKeyDown = (event) => {
+
+    if (event.keyCode >= 37 && event.keyCode <= 40) {
+      event.preventDefault(); //Preventing arrows to behave as default
+    }
+
     setMove(true);
-    let RTPosition = handlePosition();
+
     switch (event.key) {
       case "ArrowLeft":
-        RTPosition = handlePosition();
+        setPosition(prevPosition => ({ ...prevPosition, x: prevPosition.x - 10 }));
+        handlePosition()
         break;
       case "ArrowRight":
-        RTPosition = handlePosition();
+        setPosition(prevPosition => ({ ...prevPosition, x: prevPosition.x + 10 }));
+        handlePosition()
         break;
       case "ArrowUp":
-        RTPosition = handlePosition();
+        setPosition(prevPosition => ({ ...prevPosition, y: prevPosition.y - 10 }));
+        handlePosition()
         break;
       case "ArrowDown":
-        RTPosition = handlePosition();
+        setPosition(prevPosition => ({ ...prevPosition, y: prevPosition.y + 10 }));
+        handlePosition()
         break;
       default:
         break;
     }
-    setPosition(RTPosition);
   };
 
   //Function that handle icon
@@ -97,7 +105,7 @@ function App() {
       <div
         className="viewport"
         style={{
-          position: "reative",
+          position: "relative",
           left: `${position.x}px`,
           top: `${position.y}px`,
         }}
