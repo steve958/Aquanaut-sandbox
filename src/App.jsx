@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
 
 function App() {
-
   //Adding references
   const viewportRef = useRef(null);
   const playerRef = useRef(null);
@@ -27,29 +26,30 @@ function App() {
   //Function that handle movement
   const handleKeyDown = (event) => {
     setMove(true);
-    const RTPosition = handlePosition();
+    let RTPosition = handlePosition();
     switch (event.key) {
       case "ArrowLeft":
-        setPosition(RTPosition);
+        RTPosition = handlePosition();
         break;
       case "ArrowRight":
-        setPosition(RTPosition);
+        RTPosition = handlePosition();
         break;
       case "ArrowUp":
-        setPosition(RTPosition);
+        RTPosition = handlePosition();
         break;
       case "ArrowDown":
-        setPosition(RTPosition);
+        RTPosition = handlePosition();
         break;
       default:
         break;
     }
+    setPosition(RTPosition);
   };
 
   //Function that handle icon
   const handleKeyUp = () => {
     setMove(false);
-  }
+  };
 
   //Tracking current position
   function handlePosition() {
@@ -81,8 +81,10 @@ function App() {
           console.log("Collision detected!");
           return true;
         }
+        return false;
       });
     }
+    return false;
   }
 
   //Logging position
